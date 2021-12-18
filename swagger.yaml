@@ -1,0 +1,88 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Speech-to-Text API
+  description: Speech-to-Text API
+
+servers:
+  - url: 'http://localhost:8080/api'
+    description: Local Server
+
+paths:
+  /demo/transcribe:
+    post:
+      tags:
+        - "Demo"
+      description: 音声ファイルをテキストへ変換するAPI
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 音声ファイルのバイナリデータ
+      responses:
+        200:
+          description: 変換結果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  original:
+                    type: string
+                    description: 変換結果文字列
+                    example: "あいうえおかきくけこさしすせそたちつてと"
+                      
+  /demo/search:
+    get:
+      tags:
+        - "Demo"
+      description: 文字列検索API
+      parameters:
+        - in: query
+          name: original
+          description: 原文文字列
+          required: true
+          schema:
+            type: string
+            example: "あいうえおかきくけこさしすせそたちつてと"
+        - in: query
+          name: targets
+          description: 検索ワード、複数指定可能
+          required: true
+          schema:
+            type: string
+            example: "かきくけこ"
+      responses:
+        200:
+          description: 検索結果
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                    type: object
+                    properties:
+                      target:
+                        type: string
+                        description: 検索ワード
+                        example: "かきくけこ"
+                      searchResult:
+                        type: object
+                        properties:
+                          position:
+                            type: integer
+                            description: 検索ワードの位置
+                            example: 6
+                          surrounding:
+                            type: string
+                            description: 検索ワードと前後５文字の文字列
+                            example: "あいうえおかきくけこさしすせそ"
+                      
